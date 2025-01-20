@@ -1,24 +1,34 @@
-import { TextInput, View, StyleSheet, Alert } from "react-native";
-import PrimaryButton from "../components/PrimaryButton";
+import { TextInput, View, StyleSheet, Alert, ScrollView } from "react-native";
+import PrimaryButton from "../components/ui/PrimaryButton";
 
-function StartGameScreen() {
+function StartGameScreen({ onPickNumber }) {
   const [enteredNumber, setEnteredNumber] = useState("");
 
   function numberInputHandler(inputText) {
     setEnteredNumber(inputText);
   }
 
+  function resetInputHandler() {
+    setEnteredNumber("");
+  }
+
   function confirmInputHandler() {
     const chosenNumber = Number.parseInt(enteredNumber, 10);
 
     if (isNaN(chosenNumber) || chosenNumber <= 0 || chosenNumber > 99) {
-      Alert.alert();
+      Alert.alert(
+        "Invalid Number!",
+        "Number has to be a number between 1 and 99.",
+        [{ text: "Okay", style: "destructive", onPress: resetInputHandler }]
+      );
       return;
     }
+
+    onPickNumber(chosenNumber);
   }
 
   return (
-    <View style={styles.inputContainer}>
+    <ScrollView style={styles.screen}>
       <TextInput
         style={styles.numberInput}
         maxLength={2}
@@ -30,42 +40,42 @@ function StartGameScreen() {
       />
       <View style={styles.buttonsContainer}>
         <View style={styles.buttonContainer}>
-          <PrimaryButton>Reset</PrimaryButton>
+          <PrimaryButton onPress={resetInputHandler}>Reset</PrimaryButton>
         </View>
         <View style={styles.buttonContainer}>
           <PrimaryButton onPress={confirmInputHandler}>Confirm</PrimaryButton>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 export default StartGameScreen;
 
 const styles = StyleSheet.create({
-  inputContainer: {
-    justifyContent: "center",
+  screen: {
+    flex: 1,
+  },
+  rootContainer: {
+    flex: 1,
     alignItems: "center",
-    marginTop: 100,
-    padding: 16,
-    marginHorizontal: 24,
-    backgroundColor: "#3b021f",
-    borderRadius: 8,
-    elevation: 4,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    shadowOpacity: 0.25,
+  },
+  instructionText: {
+    color: Colors.secondary500,
+    fontSize: 24,
+  },
+  instructionTextObject: {
+    marginBottom: 12,
   },
   numberInput: {
-    height: 60,
-    width: 50,
+    height: 50,
     fontSize: 32,
-    borderBottomColor: "#ddb52f",
+    borderBottomColor: Colors.secondary500,
     borderBottomWidth: 2,
-    color: "#ddb52f",
+    color: Colors.secondary500,
     marginVertical: 8,
-    fontWeight: "bold",
+    fontFamily: "open-sans-bold",
+    width: 50,
     textAlign: "center",
   },
   buttonsContainer: {
